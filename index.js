@@ -22,16 +22,9 @@ const userSchema = new mongoose.Schema({
   username: { type: String, required: true }
 })
 
-const logSchema = new mongoose.Schema({
-  username: { type: String, required: true },
-  count: { type: Number, required: true },
-  log: { type: Array, required: true }
-})
-
 // Models
 let Exercise = mongoose.model('Exercise', exerciseSchema);
 let User = mongoose.model('User', userSchema);
-let Log = mongoose.model('Log', logSchema);
 
 // Middleware
 app.use(cors())
