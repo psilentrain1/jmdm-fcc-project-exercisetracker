@@ -82,6 +82,21 @@ app.get('/api/users', async (req, res) => {
   res.json(userList);
 })
 
+app.get('/api/users/:_id/logs', async ( req, res) => {
+  const user = await User.findById(req.params._id).exec();
+  const exercises = await Exercise.find({ username: user.username }).exec();
+  const exerciseList = exercises.map(exercise => {
+    return {description: exercise.description, duration: exercise.duration, date: new Date(exercise.date).toDateString()}
+  })
+
+  res.json({
+    username: user.username,
+    count: exercises.length,
+    _id: user._id,
+    log: exerciseList
+  })
+})
+
 // UPDATE
 
 
