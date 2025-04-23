@@ -77,7 +77,21 @@ app.get('/api/users', async (req, res) => {
 
 app.get('/api/users/:_id/logs', async ( req, res) => {
   const user = await User.findById(req.params._id).exec();
-  const exercises = await Exercise.find({ username: user.username }).exec();
+  const filter = {username: user.username}
+  if (req.query.from && !req.query.to){
+    filter.date = { $gte: new Date(req.query.from)}
+  }
+  if (req.query.to && !req.query.from){
+    filter.date = { $lte: new Date(req.query.to)}
+  }
+  if (req.query.from && req.query.to){
+    filter.date = { $gte: new Date(req.query.from), $lte: new Date(req.query.to)}
+  }
+  let query = Exercise.find(filter);
+  if (req.query.limit){
+    query = query.limit(req.query.limit);
+  }
+  const exercises = await query.exec();
   const exerciseList = exercises.map(exercise => {
     return {description: exercise.description, duration: exercise.duration, date: new Date(exercise.date).toDateString()}
   })
